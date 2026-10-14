@@ -20,8 +20,10 @@ def main():
             "3 - Realizar empréstimo\n"
             "4 - Realizar devolução\n"
             "5 - Listar livros\n"
-            "6 - Listar usuarios\n"
+            "6 - Listar usuários\n"
             "7 - Listar empréstimos\n"
+            "8 - Remover livro\n"
+            "9 - Remover usuário\n"
             "0 - Sair\n"
             )
 
@@ -34,14 +36,36 @@ def main():
                 break
         
             elif opcao == 1:
-                titulo = input("Digite o título: ").strip()
-                autor = input("Digite o autor: ").strip()
+                titulo = None
+                autor = None
+
+                while titulo is None:
+                    titulo = input("Digite o título: ").strip()
+                    if titulo == "":
+                        print("Não são permitidos títulos em branco.")
+                        titulo = None
+                while autor is None:
+                    autor = input("Digite o autor: ").strip()
+                    if autor == "":
+                        print("Não são permitidos nomes de autores em branco.")
+                        autor = None
                 biblioteca.cadastrar_livro(titulo, autor)
                 print(f"O seguinte livro foi cadastrado: {titulo} | Autor: {autor}")
 
             elif opcao == 2:
-                nome = input("Digite seu nome: ").strip()
-                contato = input("Digite seu email ou telefone: ").strip()
+                nome = None
+                contato = None
+
+                while nome is None:
+                    nome = input("Digite seu nome: ").strip()
+                    if nome == "":
+                        print("Não são permitidos nomes em branco.")
+                        nome = None
+                while contato is None:
+                    contato = input("Digite seu email ou telefone: ").strip()
+                    if contato == "":
+                        print("O campo contato não pode estar em branco.")
+                        contato = None                
                 biblioteca.cadastrar_usuario(nome, contato)
                 print(f"O seguinte usuário foi cadastrado: {nome} | Contato: {contato}")
 
@@ -67,8 +91,11 @@ def main():
                     except ValueError:
                         print("Digite um ID válido.")
 
-                biblioteca.realizar_emprestimo(usuario, livro)
-                
+                situacao = biblioteca.realizar_emprestimo(usuario, livro)
+                if situacao:
+                    print(f"\nEmpréstimo aprovado!")
+                else:
+                    print(f"\nEsse livro está indisponível para empréstimo no momento.")
 
             elif opcao == 4:
                 emprestimo = None
@@ -105,6 +132,44 @@ def main():
                 for emprestimo in biblioteca.emprestimos:
                     print()
                     print(emprestimo)
+            
+            elif opcao == 8:
+                while True:
+                    try:
+                        id_digitado = int(input("Digite o ID do livro a ser removido: "))
+                    except ValueError:
+                        print("Por favor, digite somente um número inteiro válido.")
+                        continue
+                    livro = biblioteca.buscar_livro(id_digitado)
+                    if livro is None:
+                        print("O ID digitado não corresponde a nenhum livro da biblioteca")
+                        continue
+                    resultado = biblioteca.remover_livro(livro)
+                    if resultado:
+                        print("Livro removido com sucesso!")
+                        break
+                    else:
+                        print("O livro não pode ser removido pois possui um empréstimo ativo.")
+                        break
+            
+            elif opcao == 9:
+                while True:
+                    try:
+                        id_digitado = int(input("Digite o ID do usuário a ser removido: "))
+                    except ValueError:
+                        print("Por favor, digite somente um número inteiro válido.")
+                        continue
+                    usuario = biblioteca.buscar_usuario(id_digitado)
+                    if usuario is None:
+                        print("O ID digitado não corresponde a nenhum usuário cadastrado no sistema.")
+                        continue
+                    resultado = biblioteca.remover_usuario(usuario)
+                    if resultado:
+                        print("Usuário removido com sucesso!")
+                        break
+                    else:
+                        print("O usuário não pode ser removido pois possui um empréstimo ativo.")
+                        break
 
             else:
                 print("Por favor, digite uma opção válida.")

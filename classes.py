@@ -34,10 +34,13 @@ class Usuario:
 
 
 class Emprestimo:
-    def __init__(self, id_emprestimo, usuario, livro, data_emprestimo, data_prevista_devolucao, data_devolucao = None):
+    def __init__(self, id_emprestimo, usuario, livro, data_emprestimo, data_prevista_devolucao, data_devolucao=None):
         self.id_emprestimo = id_emprestimo
-        self.usuario = usuario
-        self.livro = livro
+        self.id_usuario = usuario.id_usuario
+        self.nome_usuario = usuario.nome
+        self.id_livro = livro.id_livro
+        self.titulo_livro = livro.titulo
+        self.autor_livro = livro.autor
         self.data_emprestimo = data_emprestimo
         self.data_prevista_devolucao = data_prevista_devolucao
         self.data_devolucao = data_devolucao
@@ -65,8 +68,8 @@ class Emprestimo:
             
         return (
             f"ID do empréstimo: {self.id_emprestimo}\n"
-            f"Usuário: {self.usuario.nome} (ID: {self.usuario.id_usuario})\n"
-            f"Livro: {self.livro.titulo} (ID: {self.livro.id_livro})\n"
+            f"Usuário: {self.nome_usuario} (ID: {self.id_usuario})\n"
+            f"Livro: {self.titulo_livro} (ID: {self.id_livro})\n"
             f"Data do empréstimo: {data_emprestimo}\n"
             f"Devolução prevista: {data_prevista_devolucao}\n"
             f"Status: {status}"
@@ -95,7 +98,7 @@ class Biblioteca:
     def livro_esta_disponivel(self, livro):
         for e in self.emprestimos:
             
-            if livro == e.livro:
+            if livro.id_livro == e.id_livro:
 
                 if e.esta_ativo():
                     return False
@@ -109,12 +112,10 @@ class Biblioteca:
             emprestimo = Emprestimo(self.proximo_id_emprestimo, usuario, livro, data_emprestimo, data_prevista_devolucao)
             self.emprestimos.append(emprestimo)
             self.proximo_id_emprestimo += 1
-            print()
-            print(f"Empréstimo aprovado!")
+            return True
 
         else:
-            print()
-            print(f"Esse livro está indisponível para empréstimo no momento.")
+            return False
     
     def realizar_devolucao(self, emprestimo):
         if emprestimo.esta_ativo():
@@ -139,4 +140,24 @@ class Biblioteca:
         for emprestimo in self.emprestimos:
             if emprestimo.id_emprestimo == id_emprestimo:
                 return emprestimo
+
+    def remover_livro(self, livro):
+        for emprestimo in self.emprestimos:
+            if livro.id_livro == emprestimo.id_livro:
+                if emprestimo.esta_ativo():
+                    # remoção não acontece
+                    return False
+        # não encontrou barreiras no for? remoção aprovada!
+        self.livros.remove(livro)
+        return True
+
+    def remover_usuario(self, usuario):
+        for emprestimo in self.emprestimos:
+            if usuario.id_usuario == emprestimo.id_usuario:
+                if emprestimo.esta_ativo():
+                    # não remove usuario
+                    return False
+        # usuario não tem emprestimo ativo? então podemos remover!
+        self.usuarios.remove(usuario)
+        return True
 
