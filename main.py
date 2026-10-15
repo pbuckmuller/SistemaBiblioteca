@@ -49,8 +49,8 @@ def main():
                     if autor == "":
                         print("Não são permitidos nomes de autores em branco.")
                         autor = None
-                biblioteca.cadastrar_livro(titulo, autor)
-                print(f"O seguinte livro foi cadastrado: {titulo} | Autor: {autor}")
+                livro = biblioteca.cadastrar_livro(titulo, autor)
+                print(f"O seguinte livro foi cadastrado: ID: {livro.id_livro} | Título: {livro.titulo} | Autor: {livro.autor}")
 
             elif opcao == 2:
                 nome = None
@@ -66,8 +66,8 @@ def main():
                     if contato == "":
                         print("O campo contato não pode estar em branco.")
                         contato = None                
-                biblioteca.cadastrar_usuario(nome, contato)
-                print(f"O seguinte usuário foi cadastrado: {nome} | Contato: {contato}")
+                usuario = biblioteca.cadastrar_usuario(nome, contato)
+                print(f"O seguinte usuário foi cadastrado: ID: {usuario.id_usuario} | Nome: {usuario.nome} | Contato: {usuario.contato}")
 
             elif opcao == 3:
                 usuario = None
@@ -110,7 +110,12 @@ def main():
                     except ValueError:
                         print("Digite um ID válido.")
 
-                biblioteca.realizar_devolucao(emprestimo)
+                resultado = biblioteca.realizar_devolucao(emprestimo)
+
+                if resultado:
+                    print("Devolução confirmada!")
+                else:
+                    print("Esse empréstimo já foi devolvido")
 
             elif opcao == 5:
                 print()
