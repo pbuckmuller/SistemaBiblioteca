@@ -1,8 +1,21 @@
 from classes import *
+from typing import TypeVar, Callable
 
-
+T = TypeVar("T")
 LARGURA = 40
 
+def buscar_objeto(msg_input, msg_erro, funcao_buscar: Callable[[int], T | None]) -> T:
+    resultado = None
+
+    while resultado is None:
+        try:
+            dado = int(input(msg_input))
+            resultado = funcao_buscar(dado)
+            if resultado is None:
+                print(msg_erro)
+        except ValueError:
+            print(msg_erro)
+    return resultado
 
 def main():
     biblioteca = Biblioteca()
@@ -26,8 +39,6 @@ def main():
             "9 - Remover usuário\n"
             "0 - Sair\n"
             )
-
-        opcao = None
 
         try:
             opcao = int(input("Escolha uma opção: "))
@@ -70,45 +81,29 @@ def main():
                 print(f"O seguinte usuário foi cadastrado: ID: {usuario.id_usuario} | Nome: {usuario.nome} | Contato: {usuario.contato}")
 
             elif opcao == 3:
-                usuario = None
-                livro = None
+                usuario = buscar_objeto(
+                    "Digite seu ID de usuário: ",
+                    "Digite um ID de usuário válido",
+                    biblioteca.buscar_usuario
+                )
+                livro = buscar_objeto(
+                    "Digite o ID do livro: ",
+                    "Digite um ID de livro válido",
+                    biblioteca.buscar_livro
+                )
 
-                while usuario is None:
-                    try:
-                        id_usuario = int(input("Digite seu ID de usuário: "))
-                        usuario = biblioteca.buscar_usuario(id_usuario)
-                        if usuario is None:
-                            print("Digite um ID de usuário válido")
-                    except ValueError:
-                        print("Digite um ID válido.")
-
-                while livro is None:
-                    try:
-                        id_livro = int(input("Digite o ID do livro: "))
-                        livro = biblioteca.buscar_livro(id_livro)
-                        if livro is None:
-                            print("Digite um ID de livro válido")
-                    except ValueError:
-                        print("Digite um ID válido.")
-
-                situacao = biblioteca.realizar_emprestimo(usuario, livro)
-                if situacao:
-                    print(f"\nEmpréstimo aprovado!")
+                resultado = biblioteca.realizar_emprestimo(usuario, livro)
+                if resultado:
+                    print("\nEmpréstimo aprovado!")
                 else:
-                    print(f"\nEsse livro está indisponível para empréstimo no momento.")
+                    print("\nEsse livro está indisponível para empréstimo no momento.")
 
             elif opcao == 4:
-                emprestimo = None
-
-                while emprestimo is None:
-                    try:
-                        id_emprestimo= int(input("Digite o ID do empréstimo: "))
-                        emprestimo = biblioteca.buscar_emprestimo(id_emprestimo)
-
-                        if emprestimo is None:
-                            print("Digite um ID de empréstimo válido")
-                    except ValueError:
-                        print("Digite um ID válido.")
+                emprestimo = buscar_objeto(
+                    "Digite o ID do empréstimo: ",
+                    "Digite um ID de empréstimo válido",
+                    biblioteca.buscar_emprestimo
+                )
 
                 resultado = biblioteca.realizar_devolucao(emprestimo)
 
@@ -139,42 +134,28 @@ def main():
                     print(emprestimo)
             
             elif opcao == 8:
-                while True:
-                    try:
-                        id_digitado = int(input("Digite o ID do livro a ser removido: "))
-                    except ValueError:
-                        print("Por favor, digite somente um número inteiro válido.")
-                        continue
-                    livro = biblioteca.buscar_livro(id_digitado)
-                    if livro is None:
-                        print("O ID digitado não corresponde a nenhum livro da biblioteca")
-                        continue
-                    resultado = biblioteca.remover_livro(livro)
-                    if resultado:
-                        print("Livro removido com sucesso!")
-                        break
-                    else:
-                        print("O livro não pode ser removido pois possui um empréstimo ativo.")
-                        break
-            
+                livro = buscar_objeto(
+                    "Digite o ID do livro a ser removido: ",
+                    "Por favor, digite um ID válido.",
+                    biblioteca.buscar_livro
+                )
+                resultado = biblioteca.remover_livro(livro)
+                if resultado:
+                    print("Livro removido com sucesso!")
+                else:
+                    print("O livro não pode ser removido pois possui um empréstimo ativo.")
+
             elif opcao == 9:
-                while True:
-                    try:
-                        id_digitado = int(input("Digite o ID do usuário a ser removido: "))
-                    except ValueError:
-                        print("Por favor, digite somente um número inteiro válido.")
-                        continue
-                    usuario = biblioteca.buscar_usuario(id_digitado)
-                    if usuario is None:
-                        print("O ID digitado não corresponde a nenhum usuário cadastrado no sistema.")
-                        continue
-                    resultado = biblioteca.remover_usuario(usuario)
-                    if resultado:
-                        print("Usuário removido com sucesso!")
-                        break
-                    else:
-                        print("O usuário não pode ser removido pois possui um empréstimo ativo.")
-                        break
+                usuario = buscar_objeto(
+                    "Digite o ID do usuário a ser removido: ",
+                    "Por favor, digite um ID válido.",
+                    biblioteca.buscar_usuario
+                )
+                resultado = biblioteca.remover_usuario(usuario)
+                if resultado:
+                    print("Usuário removido com sucesso!")
+                else:
+                    print("O usuário não pode ser removido pois possui um empréstimo ativo.")
 
             else:
                 print("Por favor, digite uma opção válida.")
