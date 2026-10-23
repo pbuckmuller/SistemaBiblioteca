@@ -1,5 +1,5 @@
+from src.banco import Banco
 from src.biblioteca import Biblioteca
-from src.dados_teste import carregar_dados_teste
 from typing import TypeVar, Callable
 
 T = TypeVar("T")
@@ -19,9 +19,13 @@ def buscar_objeto(msg_input, msg_erro, funcao_buscar: Callable[[int], T | None])
     return resultado
 
 def main():
-    biblioteca = Biblioteca()
+    banco = Banco()
+    banco.criar_tabelas()
 
-    carregar_dados_teste(biblioteca)
+    biblioteca = Biblioteca(banco)
+    biblioteca.carregar_livros()
+    biblioteca.carregar_usuarios()
+    biblioteca.carregar_emprestimos()
 
     print("=" * LARGURA)
     print("SISTEMA DA BIBLIOTECA".center(LARGURA))
@@ -163,6 +167,8 @@ def main():
 
         except ValueError:
             print("Por favor, digite uma opção válida.")
+
+    banco.fechar()
 
 if __name__ == "__main__":
     main()
