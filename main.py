@@ -1,4 +1,5 @@
-from classes import *
+from src.biblioteca import Biblioteca
+from src.dados_teste import carregar_dados_teste
 from typing import TypeVar, Callable
 
 T = TypeVar("T")

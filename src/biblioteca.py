@@ -1,85 +1,8 @@
 from datetime import datetime, timedelta
 
-
-def carregar_dados_teste(biblioteca):
-    biblioteca.cadastrar_livro("O Hobbit", "J. R. R. Tolkien")
-    biblioteca.cadastrar_livro("1984", "George Orwell")
-    biblioteca.cadastrar_livro("Dom Casmurro", "Machado de Assis")
-    biblioteca.cadastrar_livro("Clean Code", "Robert C. Martin")
-    biblioteca.cadastrar_livro("O Guia do Mochileiro das Galáxias", "Douglas Adams")
-
-    biblioteca.cadastrar_usuario("Pedro Henrique", "pedro@email.com")
-    biblioteca.cadastrar_usuario("Ana Clara", "aninha@email.com")
-    biblioteca.cadastrar_usuario("Marcos Silva", "marquitos@email.com")
-
-
-class Livro:
-    def __init__(self, id_livro: int, titulo: str, autor: str):
-        self.id_livro = id_livro
-        self.titulo = titulo
-        self.autor = autor
-
-    def __str__(self):
-        return f"ID: {self.id_livro} | {self.titulo} | {self.autor}"
-
-
-class Usuario:
-    def __init__(self, id_usuario: int, nome: str, contato: str):
-        self.id_usuario = id_usuario
-        self.nome = nome
-        self.contato = contato
-
-    def __str__(self):
-            return f"ID: {self.id_usuario} | {self.nome} | {self.contato}"
-
-
-class Emprestimo:
-    def __init__(
-            self,
-            id_emprestimo: int,
-            usuario: Usuario,
-            livro: Livro,
-            data_emprestimo: datetime,
-            data_prevista_devolucao: datetime,
-            data_devolucao: datetime | None = None
-    ):
-        self.id_emprestimo = id_emprestimo
-        self.id_usuario = usuario.id_usuario
-        self.nome_usuario = usuario.nome
-        self.id_livro = livro.id_livro
-        self.titulo_livro = livro.titulo
-        self.autor_livro = livro.autor
-        self.data_emprestimo = data_emprestimo
-        self.data_prevista_devolucao = data_prevista_devolucao
-        self.data_devolucao = data_devolucao
-
-    def registrar_devolucao(self) -> None:
-        data_devolucao = datetime.now()
-        self.data_devolucao = data_devolucao
-
-    def esta_ativo(self) -> bool:
-        if self.data_devolucao is None:
-            return True
-        return False
-
-    def __str__(self) -> str:
-        data_emprestimo = self.data_emprestimo.strftime("%d/%m/%Y")
-        data_prevista_devolucao = self.data_prevista_devolucao.strftime("%d/%m/%Y")
-        
-        if self.data_devolucao is None:
-            status = "Ativo"
-        else:
-            data_devolucao = self.data_devolucao.strftime("%d/%m/%Y")
-            status = f"Devolvido em {data_devolucao}"
-            
-        return (
-            f"ID do empréstimo: {self.id_emprestimo}\n"
-            f"Usuário: {self.nome_usuario} (ID: {self.id_usuario})\n"
-            f"Livro: {self.titulo_livro} (ID: {self.id_livro})\n"
-            f"Data do empréstimo: {data_emprestimo}\n"
-            f"Devolução prevista: {data_prevista_devolucao}\n"
-            f"Status: {status}"
-        )
+from src.livro import Livro
+from src.usuario import Usuario
+from src.emprestimo import Emprestimo
 
 
 class Biblioteca:
@@ -163,4 +86,3 @@ class Biblioteca:
         # usuario não tem emprestimo ativo? então podemos remover!
         self.usuarios.remove(usuario)
         return True
-

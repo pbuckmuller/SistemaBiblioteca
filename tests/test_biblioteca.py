@@ -1,4 +1,4 @@
-from classes import Biblioteca
+from src.biblioteca import Biblioteca
 
 
 def test_cadastrar_livro():
@@ -64,3 +64,4 @@ def test_emprestimo_ja_devolvido():
     biblioteca.realizar_emprestimo(usuario, livro)
     assert biblioteca.realizar_devolucao(biblioteca.emprestimos[0])
     assert not biblioteca.realizar_devolucao(biblioteca.emprestimos[0])
+
